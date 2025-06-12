@@ -8,7 +8,6 @@ const router = express.Router();
 router.post("/", async (req, res) => {
     try {
 
-        console.log(req.body)
         const { name, code } = req.body
 
         if (!name || !code) {
@@ -17,7 +16,7 @@ router.post("/", async (req, res) => {
             })
         }
 
-        const r = await prisma.reservation.findMany({
+        const r = await prisma.reservation.findFirst({
             where: {
                 name: name,
                 code: code
@@ -32,34 +31,25 @@ router.post("/", async (req, res) => {
             }
         })
 
-
-        console.log(r)
-
-
-
         res.status(200).json({
-            r
+            reservations: [
+                {
+                    id: r.id,
+                    code: r.code,
+                    name: r.name,
+                    created_at: r.created_at,
+                    reservation_information: {
+                        id: r.id,
+                        checkin: r.checkin,
+                        checkout: r.checkout,
+                        room: {
+                            id: r.room.id,
+                            number: r.room.number
+                        }
+                    }
+                }
+            ]
         });
-
-        // res.status(200).json({
-        //     reservations: [
-        //         {
-        //             id: r.id,
-        //             code: r.code,
-        //             name: r.name,
-        //             created_at: r.created_at,
-        //             reservation_information: {
-        //                 id: r.id,
-        //                 checkin: r.checkin,
-        //                 checkout: r.checkout,
-        //                 room: {
-        //                     id: r.room.id,
-        //                     number: r.room.number
-        //                 }
-        //             }
-        //         }
-        //     ]
-        // });
 
 
     } catch (error) {
@@ -70,7 +60,6 @@ router.post("/", async (req, res) => {
 router.post("/:id/cancel", async (req, res) => {
     try {
 
-        console.log(req.body)
         const { name, code } = req.body
         const { id } = req.params
 

@@ -1,6 +1,8 @@
 import express, { json } from "express"
 import roomRouter from "./router/rooms/roomRouter.js"
 import reservationRouter from "./router/rooms/reservationRouter.js"
+import { configDotenv } from "dotenv"
+configDotenv.apply()
 
 const app = express()
 app.use(express.json())
