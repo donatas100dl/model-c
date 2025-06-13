@@ -7,26 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Reservation {
-  id         Int      @unique @default(autoincrement())
-  code       String
-  checkin    String
-  checkout   String
-  created_at DateTime @default(now())
-  roomId     Int
-  name       String
-  room       Room     @relation(fields: [roomId], references: [id])
+model user {
+  id         Int    @unique @default(autoincrement())
+  quota      Int 
+  free_quota Int    @default(5)
+  username   String @unique
+  password   String
+  rooms      Room[]
 }
 
 model Room {
-  id           Int           @unique @default(autoincrement())
-  number       Int
-  capacity     Int
-  floor        Int
-  room_image   String
-  price        Int
-  wifi         Boolean       @default(false)
-  parking      Boolean       @default(false)
-  breakfast    Boolean       @default(false)
-  reservations Reservation[]
+  id     Int       @unique @default(autoincrement())
+  chat   Message[]
+  userId Int
+  user   user      @relation(fields: [userId], references: [id])
+}
+
+model Message {
+  id     Int    @unique @default(autoincrement())
+  type   String
+  text   String @db.Text
+  roomId Int
+  room   Room   @relation(fields: [roomId], references: [id])
 }
